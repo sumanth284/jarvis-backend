@@ -10,12 +10,8 @@ app.post("/api/ask", async (req, res) => {
   try {
     const userMessage = req.body.message;
 
-    if (!userMessage) {
-      return res.json({ reply: "No message received" });
-    }
-
     const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=" + process.env.GEMINI_API_KEY,
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" + process.env.GEMINI_API_KEY,
       {
         method: "POST",
         headers: {
@@ -53,9 +49,7 @@ app.post("/api/ask", async (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("Jarvis backend (Gemini) is running");
+  res.send("Jarvis Gemini backend running");
 });
 
-app.listen(3000, () => {
-  console.log("Server running");
-});
+app.listen(3000, () => console.log("Server running"));
