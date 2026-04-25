@@ -6,6 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// MAIN API
 app.post("/api/ask", async (req, res) => {
   try {
     const userMessage = req.body.message;
@@ -23,29 +24,44 @@ app.post("/api/ask", async (req, res) => {
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: "You are Jarvis, a smart AI assistant." },
-          { role: "user", content: userMessage }
+          {
+            role: "system",
+            content: "You are Jarvis, a smart, helpful AI assistant."
+          },
+          {
+            role: "user",
+            content: userMessage
+          }
         ]
       })
     });
 
     const data = await response.json();
 
+    // 🔥 SHOW REAL ERROR IF ANY
     if (data.error) {
-      return res.json({ reply: "OpenAI Error: " + data.error.message });
+      return res.json({
+        reply: "OpenAI Error: " + data.error.message
+      });
     }
 
-    res.json({
-      reply: data.choices[0].message.content
+    return res.json({
+      reply: data.choices?.[0]?.message?.content || "No response"
     });
 
   } catch (err) {
-    res.json({ reply: "Server error" });
+    return res.json({
+      reply: "Server error: " + err.message
+    });
   }
 });
 
+// ROOT TEST
 app.get("/", (req, res) => {
-  res.send("Jarvis backend running");
+  res.send("Jarvis backend is running");
 });
 
-app.listen(3000, () => console.log("Server running"));
+// START SERVER
+app.listen(3000, () => {
+  console.log("Server running on port 3000");
+});
